@@ -17,13 +17,14 @@ limitations under the License.
 package function
 
 import (
+	"context"
 	"io"
 	"os"
 
 	"github.com/kubeless/kubeless/pkg/utils"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 )
 
 var logsCmd = &cobra.Command{
@@ -63,9 +64,9 @@ var logsCmd = &cobra.Command{
 			Container: funcName,
 			Follow:    follow,
 		}
-		req := k8sClient.Core().Pods(ns).GetLogs(readyPod.Name, podLog)
+		req := k8sClient.CoreV1().Pods(ns).GetLogs(readyPod.Name, podLog)
 
-		readCloser, err := req.Stream()
+		readCloser, err := req.Stream(context.TODO())
 		if err != nil {
 			logrus.Fatalf("Getting log failed: %v", err)
 		}

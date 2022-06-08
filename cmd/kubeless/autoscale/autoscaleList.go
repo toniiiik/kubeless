@@ -14,6 +14,7 @@ limitations under the License.
 package autoscale
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -59,7 +60,7 @@ func init() {
 }
 
 func doAutoscaleList(w io.Writer, client kubernetes.Interface, ns, output string) error {
-	asList, err := client.AutoscalingV2beta1().HorizontalPodAutoscalers(ns).List(metav1.ListOptions{
+	asList, err := client.AutoscalingV2beta1().HorizontalPodAutoscalers(ns).List(context.TODO(), metav1.ListOptions{
 		LabelSelector: "created-by=kubeless",
 	})
 	if err != nil {

@@ -23,7 +23,7 @@ import (
 	"github.com/kubeless/kubeless/pkg/utils"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 )
@@ -104,7 +104,7 @@ func publishTopic(conf *rest.Config, clientset kubernetes.Interface, namespace, 
 		Command:   command,
 	}
 
-	req, err := utils.Exec(clientset.Core(), pods.Items[0].Name, namespace, opts)
+	req, err := utils.Exec(clientset.CoreV1(), pods.Items[0].Name, namespace, opts)
 	if err != nil {
 		return err
 	}

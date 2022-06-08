@@ -18,6 +18,7 @@ package function
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
@@ -64,7 +65,7 @@ var callCmd = &cobra.Command{
 		}
 
 		clientset := utils.GetClientOutOfCluster()
-		svc, err := clientset.CoreV1().Services(ns).Get(funcName, metav1.GetOptions{})
+		svc, err := clientset.CoreV1().Services(ns).Get(context.TODO(), funcName, metav1.GetOptions{})
 		if err != nil {
 			logrus.Fatalf("Unable to find the service for %s", funcName)
 		}
@@ -99,7 +100,7 @@ var callCmd = &cobra.Command{
 		req.SetHeader("event-id", eventID)
 		req.SetHeader("event-time", timestamp.Format(time.RFC3339))
 		req.SetHeader("event-namespace", "cli.kubeless.io")
-		res, err := req.Do().Raw()
+		res, err := req.Do(context.TODO()).Raw()
 		if err != nil {
 			// Properly interpret line breaks
 			logrus.Error(string(res))

@@ -17,12 +17,13 @@ limitations under the License.
 package controller
 
 import (
+	"context"
 	"crypto/sha256"
 	"fmt"
 	"net/url"
 	"time"
 
-	monitoringv1alpha1 "github.com/coreos/prometheus-operator/pkg/client/monitoring/v1alpha1"
+	monitoringv1client "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned/typed/monitoring/v1"
 	"github.com/sirupsen/logrus"
 	appsv1 "k8s.io/api/apps/v1"
 	"k8s.io/api/autoscaling/v2beta1"
@@ -57,7 +58,7 @@ type FunctionController struct {
 	logger           *logrus.Entry
 	clientset        kubernetes.Interface
 	kubelessclient   versioned.Interface
-	smclient         *monitoringv1alpha1.MonitoringV1alpha1Client
+	smclient         *monitoringv1client.MonitoringV1Client
 	Functions        map[string]*kubelessApi.Function
 	queue            workqueue.RateLimitingInterface
 	informer         cache.SharedIndexInformer
@@ -73,7 +74,7 @@ type Config struct {
 }
 
 // NewFunctionController returns a new *FunctionController
-func NewFunctionController(cfg Config, smclient *monitoringv1alpha1.MonitoringV1alpha1Client) *FunctionController {
+func NewFunctionController(cfg Config, smclient *monitoringv1client.MonitoringV1Client) *FunctionController {
 	queue := workqueue.NewRateLimitingQueue(workqueue.DefaultControllerRateLimiter())
 
 	apiExtensionsClientset := utils.GetAPIExtensionsClientInCluster()
@@ -256,7 +257,7 @@ func (c *FunctionController) processItem(key string) error {
 // startImageBuildJob creates (if necessary) a job that will build an image for the given function
 // returns the name of the image, a boolean indicating if the build job has been created and an error
 func (c *FunctionController) startImageBuildJob(funcObj *kubelessApi.Function, or []metav1.OwnerReference) (string, bool, error) {
-	imagePullSecret, err := c.clientset.CoreV1().Secrets(funcObj.ObjectMeta.Namespace).Get("kubeless-registry-credentials", metav1.GetOptions{})
+	imagePullSecret, err := c.clientset.CoreV1().Secrets(funcObj.ObjectMeta.Namespace).Get(context.TODO(), "kubeless-registry-credentials", metav1.GetOptions{})
 	if err != nil {
 		return "", false, fmt.Errorf("Unable to locate registry credentials to build function image: %v", err)
 	}
@@ -404,18 +405,18 @@ func (c *FunctionController) deleteK8sResources(ns, name string) error {
 
 	// delete deployment
 	deletePolicy := metav1.DeletePropagationBackground
-	err := c.clientset.Extensions().Deployments(ns).Delete(name, &metav1.DeleteOptions{PropagationPolicy: &deletePolicy})
+	err := c.clientset.ExtensionsV1beta1().Deployments(ns).Delete(context.TODO(), name, metav1.DeleteOptions{PropagationPolicy: &deletePolicy})
 	if err != nil && !k8sErrors.IsNotFound(err) {
 		return err
 	}
 	// delete svc
-	err = c.clientset.Core().Services(ns).Delete(name, &metav1.DeleteOptions{})
+	err = c.clientset.CoreV1().Services(ns).Delete(context.TODO(), name, metav1.DeleteOptions{})
 	if err != nil && !k8sErrors.IsNotFound(err) {
 		return err
 	}
 
 	// delete cm
-	err = c.clientset.Core().ConfigMaps(ns).Delete(name, &metav1.DeleteOptions{})
+	err = c.clientset.CoreV1().ConfigMaps(ns).Delete(context.TODO(), name, metav1.DeleteOptions{})
 	if err != nil && !k8sErrors.IsNotFound(err) {
 		return err
 	}
@@ -427,7 +428,7 @@ func (c *FunctionController) deleteK8sResources(ns, name string) error {
 	}
 
 	// delete build job
-	err = c.clientset.BatchV1().Jobs(ns).DeleteCollection(&metav1.DeleteOptions{}, metav1.ListOptions{
+	err = c.clientset.BatchV1().Jobs(ns).DeleteCollection(context.TODO(), metav1.DeleteOptions{}, metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("created-by=kubeless,function=%s", name),
 	})
 	if err != nil && !k8sErrors.IsNotFound(err) {

@@ -17,6 +17,7 @@ limitations under the License.
 package function
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -267,7 +268,7 @@ func getFunctionDescription(funcName, ns, handler, file, deps, runtime, runtimeI
 }
 
 func getDeploymentStatus(cli kubernetes.Interface, funcName, ns string) (string, error) {
-	dpm, err := cli.AppsV1().Deployments(ns).Get(funcName, metav1.GetOptions{})
+	dpm, err := cli.AppsV1().Deployments(ns).Get(context.TODO(), funcName, metav1.GetOptions{})
 	if err != nil {
 		return "", err
 	}

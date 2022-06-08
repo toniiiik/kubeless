@@ -23,7 +23,7 @@ import (
 	"github.com/kubeless/kubeless/pkg/utils"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"k8s.io/api/core/v1"
+	core "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 )
@@ -87,7 +87,7 @@ func execCommand(conf *rest.Config, k8sClientSet kubernetes.Interface, ctlNamesp
 		return err
 	}
 
-	opts := v1.PodExecOptions{
+	opts := core.PodExecOptions{
 		Stdin:     false,
 		Stdout:    true,
 		Stderr:    true,
@@ -95,7 +95,7 @@ func execCommand(conf *rest.Config, k8sClientSet kubernetes.Interface, ctlNamesp
 		Command:   command,
 	}
 
-	req, err := utils.Exec(k8sClientSet.Core(), pods.Items[0].Name, ctlNamespace, opts)
+	req, err := utils.Exec(k8sClientSet.CoreV1(), pods.Items[0].Name, ctlNamespace, opts)
 	if err != nil {
 		return err
 	}

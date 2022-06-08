@@ -22,15 +22,14 @@ import (
 	"strings"
 
 	"github.com/ghodss/yaml"
-	cronjobApi "github.com/kubeless/cronjob-trigger/pkg/apis/kubeless/v1beta1"
-	cronjobUtils "github.com/kubeless/cronjob-trigger/pkg/utils"
+	// cronjobApi "github.com/kubeless/cronjob-trigger/pkg/apis/kubeless/v1beta1"
+	// cronjobUtils "github.com/kubeless/cronjob-trigger/pkg/utils"
 	kubelessApi "github.com/kubeless/kubeless/pkg/apis/kubeless/v1beta1"
 	"github.com/kubeless/kubeless/pkg/langruntime"
 	kubelessutil "github.com/kubeless/kubeless/pkg/utils"
 	"github.com/robfig/cron"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var deployCmd = &cobra.Command{
@@ -253,31 +252,31 @@ var deployCmd = &cobra.Command{
 		logrus.Infof("Function %s submitted for deployment", funcName)
 		logrus.Infof("Check the deployment status executing 'kubeless function ls %s%s'", funcName, nsArg)
 
-		if schedule != "" {
-			cronJobTrigger := cronjobApi.CronJobTrigger{}
-			cronJobTrigger.TypeMeta = metav1.TypeMeta{
-				Kind:       "CronJobTrigger",
-				APIVersion: "kubeless.io/v1beta1",
-			}
-			cronJobTrigger.ObjectMeta = metav1.ObjectMeta{
-				Name:      funcName,
-				Namespace: ns,
-			}
-			cronJobTrigger.ObjectMeta.Labels = map[string]string{
-				"created-by": "kubeless",
-				"function":   funcName,
-			}
-			cronJobTrigger.Spec.FunctionName = funcName
-			cronJobTrigger.Spec.Schedule = schedule
-			cronjobClient, err := cronjobUtils.GetKubelessClientOutCluster()
-			if err != nil {
-				logrus.Fatal(err)
-			}
-			err = cronjobUtils.CreateCronJobCustomResource(cronjobClient, &cronJobTrigger)
-			if err != nil {
-				logrus.Fatalf("Failed to deploy cron job trigger %s. Received:\n%s", funcName, err)
-			}
-		}
+		// if schedule != "" {
+		// 	cronJobTrigger := cronjobApi.CronJobTrigger{}
+		// 	cronJobTrigger.TypeMeta = metav1.TypeMeta{
+		// 		Kind:       "CronJobTrigger",
+		// 		APIVersion: "kubeless.io/v1beta1",
+		// 	}
+		// 	cronJobTrigger.ObjectMeta = metav1.ObjectMeta{
+		// 		Name:      funcName,
+		// 		Namespace: ns,
+		// 	}
+		// 	cronJobTrigger.ObjectMeta.Labels = map[string]string{
+		// 		"created-by": "kubeless",
+		// 		"function":   funcName,
+		// 	}
+		// 	cronJobTrigger.Spec.FunctionName = funcName
+		// 	cronJobTrigger.Spec.Schedule = schedule
+		// 	cronjobClient, err := cronjobUtils.GetKubelessClientOutCluster()
+		// 	if err != nil {
+		// 		logrus.Fatal(err)
+		// 	}
+		// 	err = cronjobUtils.CreateCronJobCustomResource(cronjobClient, &cronJobTrigger)
+		// 	if err != nil {
+		// 		logrus.Fatalf("Failed to deploy cron job trigger %s. Received:\n%s", funcName, err)
+		// 	}
+		// }
 	},
 }
 

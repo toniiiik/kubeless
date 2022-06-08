@@ -18,6 +18,7 @@ package utils
 
 import (
 	"bytes"
+	"context"
 
 	"k8s.io/client-go/kubernetes"
 
@@ -109,7 +110,7 @@ func (h *PrometheusMetricsHandler) GetRawMetrics(apiV1Client kubernetes.Interfac
 	}
 
 	req := apiV1Client.CoreV1().RESTClient().Get().Namespace(namespace).Resource("services").SubResource("proxy").Name(functionName + ":" + port).Suffix("/metrics")
-	return req.Do().Raw()
+	return req.Do(context.TODO()).Raw()
 }
 
 // GetFunctionMetrics returns Prometheus metrics as a slice of *Metrics

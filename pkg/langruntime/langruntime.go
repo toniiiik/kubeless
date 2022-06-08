@@ -10,7 +10,7 @@ import (
 	"github.com/ghodss/yaml"
 	"github.com/sirupsen/logrus"
 	appsv1 "k8s.io/api/apps/v1"
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
@@ -142,7 +142,7 @@ func (l *Langruntimes) GetLivenessProbeInfo(runtime string, port int) *v1.Probe 
 	livenessProbe := &v1.Probe{
 		InitialDelaySeconds: int32(3),
 		PeriodSeconds:       int32(30),
-		Handler: v1.Handler{
+		ProbeHandler: v1.ProbeHandler{
 			HTTPGet: &v1.HTTPGetAction{
 				Path: "/healthz",
 				Port: intstr.FromInt(port),
