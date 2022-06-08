@@ -13,18 +13,15 @@ require (
 	github.com/google/go-cmp v0.5.8 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/uuid v1.2.0 // indirect
-	github.com/gosuri/uitable v0.0.0-20160404203958-36ee7e946282
 	github.com/imdario/mergo v0.3.12
-	github.com/kubeless/cronjob-trigger v0.0.0-00010101000000-000000000000
-	github.com/kubeless/http-trigger v1.0.3
-	github.com/kubeless/kafka-trigger v1.1.0
+	// github.com/kubeless/cronjob-trigger v0.0.0-00010101000000-000000000000
+	// github.com/kubeless/http-trigger v1.0.3
+	// github.com/kubeless/kafka-trigger v1.1.0
 	github.com/mailru/easyjson v0.7.7 // indirect
-	github.com/mattn/go-runewidth v0.0.6 // indirect
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.57.0
 	github.com/prometheus-operator/prometheus-operator/pkg/client v0.57.0
 	github.com/prometheus/client_golang v1.12.2
 	github.com/prometheus/common v0.34.0
-	github.com/robfig/cron v0.0.0-20180505203441-b41be1df6967
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.4.0
 	github.com/stretchr/testify v1.7.1 // indirect
@@ -38,8 +35,8 @@ require (
 	k8s.io/client-go v0.24.1
 )
 
-replace github.com/kubeless/http-trigger => ../http-trigger
+// replace github.com/kubeless/http-trigger => ../http-trigger
 
-replace github.com/kubeless/cronjob-trigger => ../cronjob-trigger
+// replace github.com/kubeless/cronjob-trigger => ../cronjob-trigger
 
-replace github.com/kubeless/kafka-trigger => ../kafka-trigger
+// replace github.com/kubeless/kafka-trigger => ../kafka-trigger
