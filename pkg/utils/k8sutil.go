@@ -30,7 +30,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	appsv1 "k8s.io/api/apps/v1"
-	"k8s.io/api/autoscaling/v2beta1"
+	v2 "k8s.io/api/autoscaling/v2"
 	v1 "k8s.io/api/core/v1"
 	clientsetAPIExtensions "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	"k8s.io/client-go/kubernetes"
@@ -319,20 +319,20 @@ func doRESTReq(restIface rest.Interface, groupVersion, verb, resource, elem, nam
 }
 
 // CreateAutoscale creates HPA object for function
-func CreateAutoscale(client kubernetes.Interface, hpa v2beta1.HorizontalPodAutoscaler) error {
-	_, err := client.AutoscalingV2beta1().HorizontalPodAutoscalers(hpa.ObjectMeta.Namespace).Create(context.TODO(), &hpa, metav1.CreateOptions{})
+func CreateAutoscale(client kubernetes.Interface, hpa v2.HorizontalPodAutoscaler) error {
+	_, err := client.AutoscalingV2().HorizontalPodAutoscalers(hpa.ObjectMeta.Namespace).Create(context.TODO(), &hpa, metav1.CreateOptions{})
 	return err
 }
 
 // UpdateAutoscale updates an existing HPA object for a function
-func UpdateAutoscale(client kubernetes.Interface, hpa v2beta1.HorizontalPodAutoscaler) error {
-	_, err := client.AutoscalingV2beta1().HorizontalPodAutoscalers(hpa.ObjectMeta.Namespace).Update(context.TODO(), &hpa, metav1.UpdateOptions{})
+func UpdateAutoscale(client kubernetes.Interface, hpa v2.HorizontalPodAutoscaler) error {
+	_, err := client.AutoscalingV2().HorizontalPodAutoscalers(hpa.ObjectMeta.Namespace).Update(context.TODO(), &hpa, metav1.UpdateOptions{})
 	return err
 }
 
 // DeleteAutoscale deletes an autoscale rule
 func DeleteAutoscale(client kubernetes.Interface, name, ns string) error {
-	err := client.AutoscalingV2beta1().HorizontalPodAutoscalers(ns).Delete(context.TODO(), name, metav1.DeleteOptions{})
+	err := client.AutoscalingV2().HorizontalPodAutoscalers(ns).Delete(context.TODO(), name, metav1.DeleteOptions{})
 	if err != nil && !k8sErrors.IsNotFound(err) {
 		return err
 	}
@@ -444,7 +444,7 @@ func FunctionObjRemoveFinalizer(kubelessClient versioned.Interface, funcObj *kub
 
 // GetAnnotationsFromCRD gets annotations from a CustomResourceDefinition
 func GetAnnotationsFromCRD(clientset clientsetAPIExtensions.Interface, name string) (map[string]string, error) {
-	crd, err := clientset.ApiextensionsV1beta1().CustomResourceDefinitions().Get(context.TODO(), name, metav1.GetOptions{})
+	crd, err := clientset.ApiextensionsV1().CustomResourceDefinitions().Get(context.TODO(), name, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}

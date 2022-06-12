@@ -26,7 +26,7 @@ import (
 	monitoringv1client "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned/typed/monitoring/v1"
 	"github.com/sirupsen/logrus"
 	appsv1 "k8s.io/api/apps/v1"
-	"k8s.io/api/autoscaling/v2beta1"
+	v2 "k8s.io/api/autoscaling/v2"
 	corev1 "k8s.io/api/core/v1"
 	apiequality "k8s.io/apimachinery/pkg/api/equality"
 	k8sErrors "k8s.io/apimachinery/pkg/api/errors"
@@ -360,7 +360,7 @@ func (c *FunctionController) ensureK8sResources(funcObj *kubelessApi.Function) e
 
 	if funcObj.Spec.HorizontalPodAutoscaler.Name != "" && funcObj.Spec.HorizontalPodAutoscaler.Spec.ScaleTargetRef.Name != "" {
 		funcObj.Spec.HorizontalPodAutoscaler.OwnerReferences = or
-		if funcObj.Spec.HorizontalPodAutoscaler.Spec.Metrics[0].Type == v2beta1.ObjectMetricSourceType {
+		if funcObj.Spec.HorizontalPodAutoscaler.Spec.Metrics[0].Type == v2.ObjectMetricSourceType {
 			// A service monitor is needed when the metric is an object
 			err = utils.CreateServiceMonitor(*c.smclient, funcObj, funcObj.ObjectMeta.Namespace, or)
 			if err != nil {

@@ -18,7 +18,7 @@ package v1beta1
 
 import (
 	appsv1 "k8s.io/api/apps/v1"
-	"k8s.io/api/autoscaling/v2beta1"
+	v2 "k8s.io/api/autoscaling/v2"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -35,16 +35,16 @@ type Function struct {
 
 // FunctionSpec contains func specification
 type FunctionSpec struct {
-	Handler                 string                          `json:"handler"`               // Function handler: "file.function"
-	Function                string                          `json:"function"`              // Function file content or URL of the function
-	FunctionContentType     string                          `json:"function-content-type"` // Function file content type (plain text, url, base64, zip or compressedtar)
-	Checksum                string                          `json:"checksum"`              // Checksum of the file
-	Runtime                 string                          `json:"runtime"`               // Function runtime to use
-	Timeout                 string                          `json:"timeout"`               // Maximum timeout for the function to complete its execution
-	Deps                    string                          `json:"deps"`                  // Function dependencies
-	Deployment              appsv1.Deployment               `json:"deployment" protobuf:"bytes,3,opt,name=template"`
-	ServiceSpec             v1.ServiceSpec                  `json:"service"`
-	HorizontalPodAutoscaler v2beta1.HorizontalPodAutoscaler `json:"horizontalPodAutoscaler" protobuf:"bytes,3,opt,name=horizontalPodAutoscaler"`
+	Handler                 string                     `json:"handler"`               // Function handler: "file.function"
+	Function                string                     `json:"function"`              // Function file content or URL of the function
+	FunctionContentType     string                     `json:"function-content-type"` // Function file content type (plain text, url, base64, zip or compressedtar)
+	Checksum                string                     `json:"checksum"`              // Checksum of the file
+	Runtime                 string                     `json:"runtime"`               // Function runtime to use
+	Timeout                 string                     `json:"timeout"`               // Maximum timeout for the function to complete its execution
+	Deps                    string                     `json:"deps"`                  // Function dependencies
+	Deployment              appsv1.Deployment          `json:"deployment" protobuf:"bytes,3,opt,name=template"`
+	ServiceSpec             v1.ServiceSpec             `json:"service"`
+	HorizontalPodAutoscaler v2.HorizontalPodAutoscaler `json:"horizontalPodAutoscaler" protobuf:"bytes,3,opt,name=horizontalPodAutoscaler"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
